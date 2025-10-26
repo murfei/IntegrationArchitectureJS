@@ -129,15 +129,13 @@ async function getSalesmanById(collection, employeeId) {
 //*****************************************************************************************************
 
 //*****************************************************************************************************
-//5)
+//5) REST-based interface with Express.js
 const express = require('express');
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
-//const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(express.json());
-//app.use(cookieParser());
 
 const uri = 'mongodb://localhost:27017';
 const client = new MongoClient(uri, { useUnifiedTopology: true });
@@ -146,7 +144,7 @@ let collection;
 async function start() {
     await client.connect();
     const db = client.db('SmartHooverDB');
-    collection = db.collection('data'); // same collection name as your Java code
+    collection = db.collection('data');
     app.listen(3000, () => console.log('Server listening on port 3000'));
 }
 
@@ -159,3 +157,79 @@ app.get('/salesman/:id', async (req, res) => {
     if (!doc) return res.status(404).json({ error: 'not found' });
     res.json(doc);
 });
+//*****************************************************************************************************
+
+//*****************************************************************************************************
+// 6) Consuming REST with Axios (GET)
+
+const axios = require('axios');
+
+async function fetchSalesman(id) {
+    try {
+        const r = await axios.get(`http://localhost:3000/salesman/${id}`);
+        console.log('Salesman:', r.data);
+    } catch (err) {
+        if (err.response) console.error('API error', err.response.status);
+        else console.error('Network error', err.message);
+    }
+}
+// Example usage
+fetchSalesman(9999);
+//*****************************************************************************************************
+
+//*****************************************************************************************************
+// 7) Handling cookies in Express.js
+
+// set cookie
+app.get('/set-cookie', (req, res) => {
+    res.cookie('lastViewed', '9999', { httpOnly: true, maxAge: 3600 * 1000 });
+    res.send('cookie set');
+});
+
+// read cookie
+app.get('/who', (req, res) => {
+    const last = req.cookies.lastViewed;
+    res.send(`last viewed salesman: ${last || 'none'}`);
+});
+
+// delete cookie
+app.get('/clear-cookie', (req, res) => {
+    res.clearCookie('lastViewed');
+    res.send('cookie cleared');
+});
+//*****************************************************************************************************
+
+//*****************************************************************************************************
+// 8) Module for calculating bonus salary - check bonusCalculator.js
+// importing the module
+const { calculateBonus } = require('./bonusCalculator');
+//*****************************************************************************************************
+
+//*****************************************************************************************************
+// 9) Observer-Pattern using RxJS
+// implementation in module bonusWatcher - usage here:
+const { publishBonus, subscribe } = require('./bonusWatcher');
+
+const sub = subscribe(evt => {
+    console.log('Bonus event received:', evt);
+    // maybe send email / persist audit
+});
+
+publishBonus({ employee_id: 9999, year: 2025, suggestedBonus: 1500 });
+sub.unsubscribe(); // when you want to stop listening
+
+//*****************************************************************************************************
+
+//*****************************************************************************************************
+// 10) Definitions
+// 1.   (source:https://www.w3schools.com/js/js_control_flow.asp)
+//      "JavaScript Asynchronous Flow refers to how JavaScript handles tasks that take time to complete, like reading files,
+//      or waiting for user input, without blocking the execution of other code. To prevent blocking, JavaScript can
+//      use asynchronous programming. This allows certain operations to run in the background, and their results are
+//      handled later, when they are ready."
+// 2.
+// 3. Multithreading: (source: https://www.geeksforgeeks.org/javascript/mutlithreading-in-javascript/ )
+//      "Multithreading is the ability of any program to execute multiple threads simultaneously. As we know JavaScript is
+//      a single-threaded programming language, which means it has a single thread that handles all the execution sequentially.
+//      Single-threaded means one line of code run at once. Originally, Javascript is single-threaded because it was just used
+//      in web browser scripting language for a single user but nowadays it evolve into something bigger and make the computation very huge."
