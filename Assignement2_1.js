@@ -227,12 +227,13 @@ sub.unsubscribe(); // when you want to stop listening
 //      or waiting for user input, without blocking the execution of other code. To prevent blocking, JavaScript can
 //      use asynchronous programming. This allows certain operations to run in the background, and their results are
 //      handled later, when they are ready."
-// 2.   What is Parallelism in JavaScript?
+// 2.   (source:https://blog.openreplay.com/concurrency-vs-parallelism-in-javascript/)
+//      "What is Parallelism in JavaScript?
 //          Parallelism allows for the simultaneous execution of multiple tasks across several threads, which differs from concurrency,
 //          which manages task execution in an overlapping manner. It is like having multiple tabs opened in your browser.
 //          Each tab operates independently and can perform tasks without waiting for the others to finish.
 //          In other words, concurrency deals with managing lots of things at once by handling each task one at a time,
-//          while parallelism typically involves doing several tasks at once.
+//          while parallelism typically involves doing several tasks at once."
 // 3.  Multithreading: (source: https://www.geeksforgeeks.org/javascript/mutlithreading-in-javascript/ )
 //      "Multithreading is the ability of any program to execute multiple threads simultaneously. As we know JavaScript is
 //      a single-threaded programming language, which means it has a single thread that handles all the execution sequentially.
